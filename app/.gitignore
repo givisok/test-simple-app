@@ -1,0 +1,11 @@
+/vendor
+/node_modules
+.env
+artisan
+/public/css/
+/public/js/
+composer.lock
+_ide_helper.php
+_ide_helper_models.php
+.phpstorm.meta.php
+server.php
