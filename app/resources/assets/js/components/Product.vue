@@ -1,7 +1,7 @@
 <template>
     <tr>
         <td>{{product.name}}</td>
-        <td>{{product.price}}</td>
+        <td>{{product.real_price}}</td>
         <td>
             <input name="qty" v-model="qty" class="form-control" type="number" step="1" min="1"/>
         </td>
