@@ -3,7 +3,7 @@
         <td>{{product.name}}</td>
         <td>${{product.real_price}}</td>
         <td>
-            <input name="qty" v-model="qty" class="form-control" type="number" step="1" min="1"/>
+            <input name="qty" v-model.number="qty" class="form-control" type="number" step="1" min="1"/>
         </td>
         <td class="text-right">
             <button class="btn btn-success" @click="order()">Order</button>
@@ -24,7 +24,7 @@
         },
         methods: {
             validateInput() {
-                if (this.qty < 0 || this.qty > 100) {
+                if (!this.qty || this.qty > 100) {
                     alert('Bad quantity.');
                     this.qty = 1;
 
