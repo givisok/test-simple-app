@@ -48,7 +48,7 @@ class StripeGatewayService implements PaySystemGateway
         try {
             $customer = $this->createCustomer($order);
             $this->charge($order, $customer);
-        } catch (Card | Authentication | RateLimit | ApiConnection | Base | \Exception $e) {
+        } catch (\Exception $e) {
             throw new PayGatewayException();
         }
     }
