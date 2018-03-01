@@ -6,7 +6,9 @@
                 <p>If you don't get it please contact with us by phone 555-555-555</p>
                 <a href="/">Go to store...</a>
             </div>
-            <div v-if="errorPay == true"><h2>Payment failed!</h2>
+            <div v-if="errorPay">
+                <h2 v-if="errorPay == 'error'">Payment failed!</h2>
+                <h2 v-if="errorPay == 'unknown'">Unknown payment status!</h2>
                 <p>Error: {{this.errorMessage}}</p>
                 <p>
                     <button v-if="$parent.cartCount != 0" class="btn btn-default" @click="returnToForm()">
@@ -16,10 +18,10 @@
                 </p>
             </div>
 
-            <div v-if="$parent.cartCount == 0 && paid == false">You need to order something.
+            <div v-if="$parent.cartCount == 0 && paid == false && !errorPay">You need to order something.
                 <a href="/">Go to store...</a>
             </div>
-            <form v-else-if="errorPay == false && paid == false" v-on:submit.prevent="checkout">
+            <form v-else-if="!errorPay  && paid == false" v-on:submit.prevent="checkout">
                 <div :class="{'form-group': true, 'has-error': errors.has('name') }">
                     <input class="form-control" name="name" placeholder="Name" v-validate="'required|min:2|max:255'"
                            v-model="form.user_name"/>
@@ -88,7 +90,7 @@
             ...mapActions(['clearCart']),
             returnToForm() {
                 this.errorMessage = '';
-                this.errorPay = false;
+                this.errorPay = null;
             },
             checkout() {
                 if (this.loading) {
@@ -102,7 +104,7 @@
 
                     createToken().then(data => {
                         if (!data || !data.token || !data.token.id) {
-                            this.errorPay = true;
+                            this.errorPay = 'error';
                             this.errorMessage = 'Card decline! Bad token.';
                             this.loading = false;
 
@@ -111,7 +113,7 @@
 
                         this.form['token'] = data.token.id;
 
-                        axios.post('/api/checkout-process', {
+                        axios.post('/checkout-process', {
                             order: this.form,
                             products: this.$store.getters.basket
                         }).then((response) => {
@@ -119,7 +121,7 @@
                                 this.paid = true;
                                 this.clearCart();
                             } else if (response.data['error']) {
-                                this.errorPay = true;
+                                this.errorPay = 'error';
                                 // we can clear cart on some errors. We can use switch :)
                                 if (response.data.error === 'order_status') {
                                     this.clearCart();
@@ -128,8 +130,9 @@
                                 }
                             }
                         }).catch((e) => {
-                            this.errorPay = true;
-                            this.errorMessage = 'Some magic is happening!'
+                            this.errorPay = 'unknown';
+                            this.errorMessage = 'Some magic is happening! Please contact with out support.';
+                            this.clearCart();
                         }).then(() => {
                             this.loading = false;
                         });

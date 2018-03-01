@@ -14,6 +14,13 @@
 Route::get('/', ['as' => 'store.list', 'uses' => 'StoreController@getList']);
 Route::get('/checkout', ['as' => 'store.checkout.page', 'uses' => 'StoreController@checkOut']);
 
+Route::post('/checkout-process', [
+    'as'         => 'checkout.process',
+    'uses'       => 'StoreController@checkoutProcess',
+    'middleware' => ['csrf', 'only.ajax'],
+]);
+
+
 Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/', ['uses' => 'Admin\OrdersController@getOrdersList']);
 });

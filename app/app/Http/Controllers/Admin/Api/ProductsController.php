@@ -12,8 +12,17 @@ use App\Models\Product;
 use App\Validators\ProductValidator;
 use Illuminate\Http\Request;
 
+/**
+ * Class ProductsController
+ *
+ * @package App\Http\Controllers\Admin\Api
+ */
 class ProductsController extends Controller
 {
+    /**
+     * @param Product $product
+     * @return ProductResource
+     */
     public function index(Product $product)
     {
         return new ProductResource($product->paginate(15));
